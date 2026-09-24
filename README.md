@@ -605,4 +605,4 @@ Special thanks to the team members, faculty mentors, institution, and everyone w
 
 **Predict Demand → Prevent Waste → Rescue Surplus → Build a Smarter Food Loop**
 
-If you find this project interesting, consider ⭐ starring the repository and following the project's development.
+If you find this project interesting, consider ⭐ starring the repository and following the project's  development.

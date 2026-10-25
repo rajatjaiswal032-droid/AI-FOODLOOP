@@ -69,3 +69,24 @@ This is an evidence-based estimate, not a claim of production readiness. The cor
 - Browser verification confirmed batch recording, blocked-before-verification behavior,
   and the human-verification form. Complete lifecycle behavior is additionally covered
   by automated service/API tests.
+
+## Daily Progress Update - 2026-10-26
+
+### Verified accomplishments
+- Fixed the incorrect quantity_remaining calculation in the redistribution workflow.
+- Added regression assertions for initial quantity, partial delivery, and disposal.
+- Redistribution tests passed: 12 passed.
+- Complete automated suite passed: 116 passed, 0 failed, 1 deprecation warning.
+- Browser acceptance test previously passed after the HTML table rendering workaround.
+- Admin account creation and dashboard login were confirmed during local testing.
+
+### Known issues and limitations
+- Windows Code Integrity previously blocked pyarrow/arrow.dll. The underlying policy issue remains unresolved.
+- Manual verification of all forecast, chart, download, and redistribution screens remains pending.
+- One Starlette/httpx deprecation warning remains.
+- Temporary and backup files are intentionally excluded from this progress update.
+
+### Next priorities
+1. Verify local and GitHub repository synchronization.
+2. Manually validate CSV upload, forecast results, charts, and report downloads.
+3. Review the remaining dependency warning and Windows DLL-blocking issue.

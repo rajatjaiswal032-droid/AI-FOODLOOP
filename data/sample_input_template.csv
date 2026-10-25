@@ -1,0 +1,3 @@
+date,meal_name,quantity_prepared,quantity_consumed,day_of_week,event_flag,weather
+2026-01-01,Vegetable Rice,100,92,Thursday,false,
+2026-01-02,Vegetable Rice,100,88,Friday,false,

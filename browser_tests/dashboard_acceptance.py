@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import os
 import socket
@@ -111,15 +111,15 @@ def test_dashboard_startup_authentication_and_csv_validation(
             page.get_by_role("textbox", name="Username").fill("wrong@example.com")
             page.get_by_role("textbox", name="Password").fill("wrong-password")
             page.get_by_role("button", name="Sign in").click()
-            expect(page.get_by_text("Invalid credentials.")).to_be_visible(timeout=10_000)
+            expect(page.get_by_text("Invalid username or password.")).to_be_visible(timeout=10_000)
 
             page.get_by_role("textbox", name="Username").fill(ADMIN_USERNAME)
             page.get_by_role("textbox", name="Password").fill(ADMIN_PASSWORD)
             page.get_by_role("button", name="Sign in").click()
-            expect(page.get_by_text("Data-quality summary")).to_be_visible(timeout=15_000)
-
             uploader = page.locator('input[type="file"]')
             uploader.set_input_files(str(valid_csv))
+
+            expect(page.get_by_text("Data-quality summary")).to_be_visible(timeout=15_000)
             expect(page.get_by_text("Forecast readiness:")).to_be_visible(timeout=15_000)
             expect(page.get_by_text("Historical records")).to_be_visible(timeout=15_000)
 

@@ -165,11 +165,15 @@ def _quantities(connection, batch_id: str) -> dict[str, float]:
         "SELECT COALESCE(SUM(quantity_disposed), 0) AS value FROM disposals "
         "WHERE batch_id = ?", (batch_id,)
     ).fetchone()["value"]
+    available = connection.execute(
+        "SELECT quantity_available FROM surplus_batches WHERE id = ?",
+        (batch_id,),
+    ).fetchone()["quantity_available"]
     return {
         "quantity_assigned": assigned,
         "quantity_delivered": delivered,
         "quantity_disposed": disposed,
-        "quantity_remaining": max(0, 0),
+        "quantity_remaining": max(0, available - assigned - disposed),
     }
 
 

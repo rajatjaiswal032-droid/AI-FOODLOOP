@@ -407,9 +407,40 @@ try:
 except ValueError as error:
     saved_observations = []
     st.error(str(error))
+def render_table(table_data, **_kwargs):
+    # Render tabular data as escaped HTML.
+    if isinstance(table_data, pd.DataFrame):
+        table_frame = table_data
+    else:
+        table_frame = pd.DataFrame(table_data)
+
+    if table_frame.empty:
+        st.info("No rows to display.")
+        return
+
+    table_html = table_frame.to_html(
+        index=False,
+        escape=True,
+        classes="foodloop-table",
+        border=0,
+    )
+
+    st.markdown(
+        "<style>"
+        ".foodloop-table-wrap{width:100%;overflow-x:auto;}"
+        "table.foodloop-table{width:100%;border-collapse:collapse;font-size:.9rem;}"
+        "table.foodloop-table th,table.foodloop-table td{"
+        "border:1px solid rgba(128,128,128,.3);padding:.45rem .6rem;text-align:left;}"
+        "table.foodloop-table th{background:rgba(128,128,128,.12);}"
+        "</style>"
+        '<div class="foodloop-table-wrap">' + table_html + "</div>",
+        unsafe_allow_html=True,
+    )
+
+
 if saved_observations:
     history_frame = pd.DataFrame(saved_observations)
-    st.dataframe(
+    render_table(
         history_frame[
             [
                 "id",
@@ -520,7 +551,7 @@ if preview_frame is not None:
     st.caption(
         f"Previewing up to {settings.upload_preview_rows:,} rows without changing the uploaded file."
     )
-    st.dataframe(preview_frame, width="stretch")
+    render_table(preview_frame, width="stretch")
 
 if quality.missing_values:
     st.write("Missing values:", quality.missing_values)
@@ -569,7 +600,7 @@ overview_columns[3].metric("Observed surplus", f"{data['quantity_waste'].sum():,
 
 st.markdown('<div id="validated-data"></div>', unsafe_allow_html=True)
 st.subheader("Validated data")
-st.dataframe(data, width="stretch")
+render_table(data, width="stretch")
 metric_columns = st.columns(4)
 metric_columns[0].metric("Records", len(data))
 metric_columns[1].metric("Prepared", f"{data['quantity_prepared'].sum():,.0f}")
@@ -749,7 +780,7 @@ with st.form("surplus_form"):
 
 events = list_surplus_events(actor_id=authenticated_user.id)
 if events:
-    st.dataframe(events, width="stretch")
+    render_table(events, width="stretch")
 
 st.markdown('<div id="redistribution"></div>', unsafe_allow_html=True)
 st.markdown(
@@ -794,7 +825,7 @@ if batches:
     selected_batch_id = st.selectbox("Batch", batch_ids, key="workflow_batch")
     selected_batch = next(batch for batch in batches if batch["id"] == selected_batch_id)
     eligibility = check_eligibility(selected_batch_id)
-    st.dataframe(pd.DataFrame([selected_batch]), width="stretch")
+    render_table(pd.DataFrame([selected_batch]), width="stretch")
     if eligibility["eligible"]:
         st.success("Eligibility: eligible for redistribution.")
     else:
@@ -878,7 +909,7 @@ if batches:
     assignments = list_assignments(selected_batch_id)
     if assignments:
         st.markdown("**Assignments and delivery**")
-        st.dataframe(pd.DataFrame(assignments), width="stretch")
+        render_table(pd.DataFrame(assignments), width="stretch")
         assignment_ids = [assignment["id"] for assignment in assignments]
         with st.form("delivery_form"):
             delivery_assignment = st.selectbox("Assignment", assignment_ids)
@@ -929,7 +960,7 @@ if batches:
 
     st.markdown('<div id="audit"></div>', unsafe_allow_html=True)
     st.markdown("**Audit history**")
-    st.dataframe(
+    render_table(
         pd.DataFrame(get_audit_history(selected_batch_id)),
         width="stretch",
     )
@@ -963,7 +994,7 @@ meal_summary = (
     ]
     .sum()
 )
-st.dataframe(meal_summary, width="stretch")
+render_table(meal_summary, width="stretch")
 st.download_button(
     "Download processed demand report",
     data=data.to_csv(index=False).encode("utf-8"),
@@ -991,7 +1022,7 @@ st.caption(
 )
 if insights.status == "available":
     st.markdown("**Meal-wise surplus summary**")
-    st.dataframe(insights.meal_summary, width="stretch")
+    render_table(insights.meal_summary, width="stretch")
 
     st.markdown("**Weekday surplus comparison**")
     if insights.weekday_summary.empty:
@@ -1009,7 +1040,7 @@ if insights.status == "available":
             st.info("Weekday surplus chart is unavailable for the current data.")
         else:
             st.bar_chart(weekday_chart, width="stretch")
-        st.dataframe(insights.weekday_summary, width="stretch")
+        render_table(insights.weekday_summary, width="stretch")
 
     st.markdown("**Chronological surplus trend**")
     trend_chart = finite_chart_series(

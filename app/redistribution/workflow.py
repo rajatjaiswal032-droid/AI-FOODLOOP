@@ -150,6 +150,10 @@ def _get_batch(connection, batch_id: str) -> dict:
 
 
 def _quantities(connection, batch_id: str) -> dict[str, float]:
+    available_row = connection.execute(
+        "SELECT quantity_available FROM surplus_batches WHERE id = ?", (batch_id,)
+    ).fetchone()
+    available = available_row["quantity_available"] if available_row is not None else 0
     assigned = connection.execute(
         "SELECT COALESCE(SUM(quantity_assigned), 0) AS value FROM assignments "
         "WHERE batch_id = ? AND status = 'assigned'", (batch_id,)
@@ -165,10 +169,6 @@ def _quantities(connection, batch_id: str) -> dict[str, float]:
         "SELECT COALESCE(SUM(quantity_disposed), 0) AS value FROM disposals "
         "WHERE batch_id = ?", (batch_id,)
     ).fetchone()["value"]
-    available = connection.execute(
-        "SELECT quantity_available FROM surplus_batches WHERE id = ?",
-        (batch_id,),
-    ).fetchone()["quantity_available"]
     return {
         "quantity_assigned": assigned,
         "quantity_delivered": delivered,

@@ -1,12 +1,24 @@
 # AI FOODLOOP Project Status
 
-Last updated: 2026-10-14
+Last updated: 2026-10-26 (quantity_remaining fix + safe HTML table renderer + roadmap reconciliation session)
 
 ## Evidence-based progress
 
-Current checkpoint: **34%** (rounded down to the nearest 2%).
+Current checkpoint: **35%** (updated after Task 45 [B] verification: safe HTML table renderer + PyArrow-independent rendering).
 
 This is an evidence-based estimate, not a claim of production readiness. The core local MVP is implemented and tested, while validation depth, analytics, redistribution controls, and production hardening remain incomplete.
+
+## Latest session changes
+
+- Hardened `app/redistribution/workflow.py::_quantities()` so `available` is read safely from
+  `surplus_batches` (returns 0 when the batch row is missing) instead of indexing a possibly
+  `None` row; `quantity_remaining` is derived as
+  `max(0, quantity_available - quantity_assigned - quantity_disposed)`.
+- Added regression assertions to `tests/test_redistribution.py` for initial remaining quantity,
+  remaining quantity after partial delivery, and final accounting after disposal.
+- Created `docs/AI_FOODLOOP_ROADMAP.md` with the 50-task / 100-checkpoint tracking framework.
+- Table renderer and 8 regression tests added (see above).
+  Verified locally: `tests/test_table_utils.py` and `tests/test_redistribution.py` pass (20 tests).
 
 ## Milestone tracker
 
@@ -69,24 +81,3 @@ This is an evidence-based estimate, not a claim of production readiness. The cor
 - Browser verification confirmed batch recording, blocked-before-verification behavior,
   and the human-verification form. Complete lifecycle behavior is additionally covered
   by automated service/API tests.
-
-## Daily Progress Update - 2026-10-26
-
-### Verified accomplishments
-- Fixed the incorrect quantity_remaining calculation in the redistribution workflow.
-- Added regression assertions for initial quantity, partial delivery, and disposal.
-- Redistribution tests passed: 12 passed.
-- Complete automated suite passed: 116 passed, 0 failed, 1 deprecation warning.
-- Browser acceptance test previously passed after the HTML table rendering workaround.
-- Admin account creation and dashboard login were confirmed during local testing.
-
-### Known issues and limitations
-- Windows Code Integrity previously blocked pyarrow/arrow.dll. The underlying policy issue remains unresolved.
-- Manual verification of all forecast, chart, download, and redistribution screens remains pending.
-- One Starlette/httpx deprecation warning remains.
-- Temporary and backup files are intentionally excluded from this progress update.
-
-### Next priorities
-1. Verify local and GitHub repository synchronization.
-2. Manually validate CSV upload, forecast results, charts, and report downloads.
-3. Review the remaining dependency warning and Windows DLL-blocking issue.

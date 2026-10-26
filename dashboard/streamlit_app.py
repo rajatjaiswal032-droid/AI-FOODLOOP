@@ -35,6 +35,7 @@ from app.observations.service import (
     list_observations,
 )
 from dashboard.chart_utils import finite_chart_frame, finite_chart_series
+from dashboard.table_utils import render_table
 
 
 st.set_page_config(
@@ -186,6 +187,12 @@ st.markdown(
         .workflow-card { background: linear-gradient(145deg, #18251e, #20392b); }
         .status-note { background: #1c3325; color: #dcefe2; border-color: #345140; }
     }
+    .foodloop-table-wrap { overflow-x: auto; margin: .5rem 0 1rem; }
+    .foodloop-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    .foodloop-table th, .foodloop-table td { border: 1px solid #dce8df; padding: .45rem .6rem; text-align: left; vertical-align: top; }
+    .foodloop-table th { background: #edf6ef; color: #12372a; font-weight: 700; }
+    .foodloop-table tbody tr:nth-child(even) { background: #f7fbf8; }
+    .foodloop-table--empty { color: #64756b; font-style: italic; }
     </style>
     <section class="hero">
         <div class="eyebrow">Food intelligence · responsible recovery</div>
@@ -407,37 +414,6 @@ try:
 except ValueError as error:
     saved_observations = []
     st.error(str(error))
-def render_table(table_data, **_kwargs):
-    # Render tabular data as escaped HTML.
-    if isinstance(table_data, pd.DataFrame):
-        table_frame = table_data
-    else:
-        table_frame = pd.DataFrame(table_data)
-
-    if table_frame.empty:
-        st.info("No rows to display.")
-        return
-
-    table_html = table_frame.to_html(
-        index=False,
-        escape=True,
-        classes="foodloop-table",
-        border=0,
-    )
-
-    st.markdown(
-        "<style>"
-        ".foodloop-table-wrap{width:100%;overflow-x:auto;}"
-        "table.foodloop-table{width:100%;border-collapse:collapse;font-size:.9rem;}"
-        "table.foodloop-table th,table.foodloop-table td{"
-        "border:1px solid rgba(128,128,128,.3);padding:.45rem .6rem;text-align:left;}"
-        "table.foodloop-table th{background:rgba(128,128,128,.12);}"
-        "</style>"
-        '<div class="foodloop-table-wrap">' + table_html + "</div>",
-        unsafe_allow_html=True,
-    )
-
-
 if saved_observations:
     history_frame = pd.DataFrame(saved_observations)
     render_table(
@@ -455,8 +431,7 @@ if saved_observations:
                 "correction_reason",
                 "created_at",
             ]
-        ],
-        width="stretch",
+        ]
     )
 else:
     st.info("No saved observations match the selected filters.")
@@ -551,7 +526,7 @@ if preview_frame is not None:
     st.caption(
         f"Previewing up to {settings.upload_preview_rows:,} rows without changing the uploaded file."
     )
-    render_table(preview_frame, width="stretch")
+    render_table(preview_frame)
 
 if quality.missing_values:
     st.write("Missing values:", quality.missing_values)
@@ -600,7 +575,7 @@ overview_columns[3].metric("Observed surplus", f"{data['quantity_waste'].sum():,
 
 st.markdown('<div id="validated-data"></div>', unsafe_allow_html=True)
 st.subheader("Validated data")
-render_table(data, width="stretch")
+render_table(data)
 metric_columns = st.columns(4)
 metric_columns[0].metric("Records", len(data))
 metric_columns[1].metric("Prepared", f"{data['quantity_prepared'].sum():,.0f}")
@@ -780,7 +755,7 @@ with st.form("surplus_form"):
 
 events = list_surplus_events(actor_id=authenticated_user.id)
 if events:
-    render_table(events, width="stretch")
+    render_table(events)
 
 st.markdown('<div id="redistribution"></div>', unsafe_allow_html=True)
 st.markdown(
@@ -825,7 +800,7 @@ if batches:
     selected_batch_id = st.selectbox("Batch", batch_ids, key="workflow_batch")
     selected_batch = next(batch for batch in batches if batch["id"] == selected_batch_id)
     eligibility = check_eligibility(selected_batch_id)
-    render_table(pd.DataFrame([selected_batch]), width="stretch")
+    render_table(pd.DataFrame([selected_batch]))
     if eligibility["eligible"]:
         st.success("Eligibility: eligible for redistribution.")
     else:
@@ -909,7 +884,7 @@ if batches:
     assignments = list_assignments(selected_batch_id)
     if assignments:
         st.markdown("**Assignments and delivery**")
-        render_table(pd.DataFrame(assignments), width="stretch")
+        render_table(pd.DataFrame(assignments))
         assignment_ids = [assignment["id"] for assignment in assignments]
         with st.form("delivery_form"):
             delivery_assignment = st.selectbox("Assignment", assignment_ids)
@@ -960,10 +935,7 @@ if batches:
 
     st.markdown('<div id="audit"></div>', unsafe_allow_html=True)
     st.markdown("**Audit history**")
-    render_table(
-        pd.DataFrame(get_audit_history(selected_batch_id)),
-        width="stretch",
-    )
+    render_table(pd.DataFrame(get_audit_history(selected_batch_id)))
 
 st.markdown('<div id="insights"></div>', unsafe_allow_html=True)
 st.markdown(
@@ -994,7 +966,7 @@ meal_summary = (
     ]
     .sum()
 )
-render_table(meal_summary, width="stretch")
+render_table(meal_summary)
 st.download_button(
     "Download processed demand report",
     data=data.to_csv(index=False).encode("utf-8"),
@@ -1022,7 +994,7 @@ st.caption(
 )
 if insights.status == "available":
     st.markdown("**Meal-wise surplus summary**")
-    render_table(insights.meal_summary, width="stretch")
+    render_table(insights.meal_summary)
 
     st.markdown("**Weekday surplus comparison**")
     if insights.weekday_summary.empty:
@@ -1040,7 +1012,7 @@ if insights.status == "available":
             st.info("Weekday surplus chart is unavailable for the current data.")
         else:
             st.bar_chart(weekday_chart, width="stretch")
-        render_table(insights.weekday_summary, width="stretch")
+        render_table(insights.weekday_summary)
 
     st.markdown("**Chronological surplus trend**")
     trend_chart = finite_chart_series(

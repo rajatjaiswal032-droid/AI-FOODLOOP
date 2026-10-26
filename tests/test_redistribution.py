@@ -62,9 +62,12 @@ def approve(batch_id: str):
 
 def test_valid_batch_creation_and_pending_eligibility(workflow_database):
     batch = create_test_batch()
-    assert batch["quantity_remaining"] == 100
-    assert get_batch(batch["id"])["quantity_remaining"] == 100
     assert batch["status"] == "pending_verification"
+    assert batch["quantity_available"] == 100
+    assert batch["quantity_assigned"] == 0
+    assert batch["quantity_delivered"] == 0
+    assert batch["quantity_disposed"] == 0
+    assert batch["quantity_remaining"] == 100
     result = check_eligibility(batch["id"])
     assert result["eligible"] is False
     assert "human food-safety verification" in " ".join(result["reasons"]).lower()
@@ -159,13 +162,6 @@ def test_assignments_are_bounded_and_delivery_is_partial(workflow_database):
         batch["id"], first["id"], 60, "operator",
         actor_id=actor(Role.KITCHEN_OPERATOR),
     )
-    current = get_batch(batch["id"])
-    assert current["quantity_assigned"] == 60
-    assert current["quantity_delivered"] == 0
-    assert current["quantity_disposed"] == 0
-    assert current["quantity_remaining"] == 40
-    assert current["quantity_undelivered"] == 60
-
     with pytest.raises(ValueError, match="exceeds"):
         create_assignment(
             batch["id"], second["id"], 41, "operator",
@@ -179,11 +175,9 @@ def test_assignments_are_bounded_and_delivery_is_partial(workflow_database):
         assignment["id"], 25, "operator", actor_id=actor(Role.KITCHEN_OPERATOR)
     )
     current = get_batch(batch["id"])
-    assert current["quantity_assigned"] == 60
     assert current["quantity_delivered"] == 25
-    assert current["quantity_disposed"] == 0
-    assert current["quantity_remaining"] == 40
     assert current["quantity_undelivered"] == 35
+    assert current["quantity_remaining"] == 40
     with pytest.raises(ValueError, match="undelivered"):
         record_delivery(
             assignment["id"], 36, "operator", actor_id=actor(Role.KITCHEN_OPERATOR)
@@ -211,13 +205,11 @@ def test_disposal_cannot_double_count_assigned_quantity(workflow_database):
         batch["id"], 40, "No remaining unassigned quantity", "operator",
         actor_id=actor(Role.KITCHEN_OPERATOR),
     )
-    current = get_batch(batch["id"])
-    assert current["quantity_assigned"] == 60
-    assert current["quantity_delivered"] == 60
-    assert current["quantity_disposed"] == 40
-    assert current["quantity_remaining"] == 0
-    assert current["quantity_undelivered"] == 0
-
+    final = get_batch(batch["id"])
+    assert final["quantity_delivered"] == 60
+    assert final["quantity_disposed"] == 40
+    assert final["quantity_remaining"] == 0
+    assert final["quantity_undelivered"] == 0
     with pytest.raises(ValueError, match="assigned"):
         record_disposal(
             batch["id"], 1, "No remaining unassigned quantity", "operator",

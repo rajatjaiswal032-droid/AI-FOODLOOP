@@ -36,6 +36,7 @@ from app.observations.service import (
 )
 from dashboard.chart_utils import finite_chart_frame, finite_chart_series
 from dashboard.table_utils import render_table
+from dashboard.ui_components import show_empty, show_error, show_info, show_success, show_warning
 
 
 st.set_page_config(
@@ -527,6 +528,8 @@ if preview_frame is not None:
         f"Previewing up to {settings.upload_preview_rows:,} rows without changing the uploaded file."
     )
     render_table(preview_frame)
+else:
+    show_info("A preview could not be generated for this file.")
 
 if quality.missing_values:
     st.write("Missing values:", quality.missing_values)
@@ -543,21 +546,30 @@ if quality.prepared_total is not None and quality.consumed_total is not None:
     )
 
 if quality.forecast_readiness == "NOT READY":
-    st.error("Forecast readiness: NOT READY")
+    show_error("Forecast readiness: NOT READY")
 else:
-    st.success(f"Forecast readiness: {quality.forecast_readiness}")
+    show_success(f"Forecast readiness: {quality.forecast_readiness}")
 for message in quality.blocking_errors:
-    st.error(message)
+    show_error(message)
 for message in quality.warnings:
-    st.warning(message)
+    show_warning(message)
 if quality.blocking_errors:
     st.stop()
 
 try:
     data = preprocess_demand_data(uploaded_bytes)
 except ValueError as error:
-    st.error(str(error))
+    show_error(str(error))
     st.stop()
+
+if data is None or getattr(data, "empty", False):
+    show_empty(
+        "No relevant records are available yet.",
+        hint="Upload a valid historical demand CSV to populate this overview.",
+    )
+    st.stop()
+
+show_info("Historical data validated and ready for analysis.")
 
 st.markdown('<div id="overview"></div>', unsafe_allow_html=True)
 st.markdown(

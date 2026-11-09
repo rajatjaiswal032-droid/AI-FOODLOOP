@@ -49,13 +49,18 @@ st.markdown(
     """
     <style>
     :root {
-        --foodloop-forest: #12372a;
-        --foodloop-emerald: #2f6f4e;
-        --foodloop-mint: #dcefe2;
-        --foodloop-ink: #20332a;
-        --foodloop-muted: #64756b;
-        --foodloop-line: #dce8df;
-        --foodloop-surface: #f7fbf8;
+        --foodloop-primary: #2563EB;
+        --foodloop-primary-dark: #1E40AF;
+        --foodloop-primary-light: #93C5FD;
+        --foodloop-bg: #F0F7FF;
+        --foodloop-card: #FFFFFF;
+        --foodloop-text: #1F2937;
+        --foodloop-text-muted: #64748B;
+        --foodloop-success: #18794E;
+        --foodloop-warning: #A85D08;
+        --foodloop-error: #B42318;
+        --foodloop-line: #E2E8F0;
+        --foodloop-surface: #F8FAFC;
     }
     .block-container {
         max-width: 1380px;
@@ -65,33 +70,31 @@ st.markdown(
     .hero {
         padding: 3.25rem 3.5rem;
         border-radius: 1.5rem;
-        background:
-            radial-gradient(circle at 90% 15%, rgba(143,188,143,.28), transparent 28%),
-            linear-gradient(130deg, #102f24 0%, #1f533b 68%, #2f6f4e 100%);
+        background: linear-gradient(135deg, var(--foodloop-primary-dark) 0%, var(--foodloop-primary) 100%);
         color: white;
         margin-bottom: 1.2rem;
-        border: 1px solid rgba(220,239,226,.2);
-        box-shadow: 0 18px 45px rgba(18,55,42,.16);
+        border: 1px solid rgba(255,255,255,.2);
+        box-shadow: 0 18px 45px rgba(30,64,175,.16);
     }
     .hero .eyebrow {
-        color: #cdebd6;
+        color: var(--foodloop-primary-light);
         font-size: .78rem;
         font-weight: 700;
         letter-spacing: .14em;
         text-transform: uppercase;
     }
     .hero h1 { margin: .65rem 0 .5rem; font-size: clamp(2.2rem, 5vw, 4.4rem); line-height: 1.02; }
-    .hero .hero-copy { margin: 0; max-width: 730px; font-size: 1.13rem; line-height: 1.65; color: #edf8ef; }
+    .hero .hero-copy { margin: 0; max-width: 730px; font-size: 1.13rem; line-height: 1.65; color: #eef4ff; }
     .hero .hero-principle {
         display: inline-block;
         margin-top: 1.25rem;
         padding: .65rem .9rem;
-        border-left: 3px solid #9fd2ac;
-        color: #dff2e3;
+        border-left: 3px solid var(--foodloop-primary-light);
+        color: #dbeafe;
         font-weight: 650;
     }
     .section-kicker {
-        color: var(--foodloop-emerald);
+        color: var(--foodloop-primary-dark);
         font-size: .76rem;
         font-weight: 750;
         letter-spacing: .13em;
@@ -99,72 +102,72 @@ st.markdown(
         margin: 1.7rem 0 .3rem;
     }
     .section-title {
-        color: var(--foodloop-ink);
+        color: var(--foodloop-text);
         font-size: 1.65rem;
         font-weight: 750;
         margin-bottom: .3rem;
     }
-    .section-copy { color: var(--foodloop-muted); margin-bottom: 1rem; }
+    .section-copy { color: var(--foodloop-text-muted); margin-bottom: 1rem; }
     .overview-card, .feature-card, .workflow-card {
         min-height: 142px;
         padding: 1.1rem 1.2rem;
         border: 1px solid var(--foodloop-line);
         border-radius: 1rem;
-        background: var(--foodloop-surface);
-        box-shadow: 0 5px 18px rgba(18,55,42,.05);
+        background: var(--foodloop-card);
+        box-shadow: 0 5px 18px rgba(30,64,175,.05);
     }
     .overview-card .label, .feature-card .label {
-        color: var(--foodloop-muted);
+        color: var(--foodloop-text-muted);
         font-size: .78rem;
         font-weight: 650;
         text-transform: uppercase;
         letter-spacing: .06em;
     }
     .overview-card .value {
-        color: var(--foodloop-forest);
+        color: var(--foodloop-primary-dark);
         font-size: 1.6rem;
         font-weight: 760;
         margin-top: .55rem;
     }
     .overview-card .hint, .feature-card p, .workflow-card p {
-        color: var(--foodloop-muted);
+        color: var(--foodloop-text-muted);
         font-size: .9rem;
         line-height: 1.45;
         margin: .4rem 0 0;
     }
-    .feature-card { min-height: 165px; background: white; }
+    .feature-card { min-height: 165px; background: var(--foodloop-card); }
     .feature-card .icon {
-        color: var(--foodloop-emerald);
+        color: var(--foodloop-primary);
         font-size: 1.35rem;
         font-weight: 800;
         margin-bottom: .45rem;
     }
-    .feature-card strong, .workflow-card strong { color: var(--foodloop-forest); font-size: 1rem; }
-    .workflow-card { min-height: 170px; background: linear-gradient(145deg, #f7fbf8, #edf7ef); }
+    .feature-card strong, .workflow-card strong { color: var(--foodloop-text); font-size: 1rem; }
+    .workflow-card { min-height: 170px; background: linear-gradient(145deg, var(--foodloop-card), var(--foodloop-surface)); }
     .workflow-card .step {
-        color: var(--foodloop-emerald);
+        color: var(--foodloop-primary-dark);
         font-size: .73rem;
         font-weight: 800;
         letter-spacing: .1em;
     }
     .workflow-card p { margin-top: .7rem; }
     div[data-testid="stMetric"] {
-        background: white;
+        background: var(--foodloop-card);
         border: 1px solid var(--foodloop-line);
         border-radius: .9rem;
         padding: .85rem 1rem;
-        box-shadow: 0 4px 14px rgba(18,55,42,.04);
+        box-shadow: 0 4px 14px rgba(30,64,175,.04);
     }
     div[data-testid="stForm"] {
         border-color: var(--foodloop-line);
         border-radius: 1rem;
-        background: #fbfdfb;
+        background: var(--foodloop-card);
     }
     .status-note {
         padding: .75rem .9rem;
         border-radius: .7rem;
-        background: #f1f8f2;
-        color: var(--foodloop-ink);
+        background: #eff6ff;
+        color: var(--foodloop-text);
         border: 1px solid var(--foodloop-line);
         font-size: .9rem;
     }
@@ -177,23 +180,23 @@ st.markdown(
         .action-row { margin-top: 0; }
     }
     @media (prefers-color-scheme: dark) {
-        .section-title { color: #dcefe2; }
-        .section-copy { color: #b4c7bb; }
+        .section-title { color: #eef4ff; }
+        .section-copy { color: #94a3b8; }
         .feature-card, .overview-card {
-            background: #18251e;
-            border-color: #345140;
+            background: #1e293b;
+            border-color: #334155;
         }
-        .feature-card strong, .workflow-card strong { color: #e2f3e5; }
-        .feature-card p, .overview-card .hint, .workflow-card p { color: #b4c7bb; }
-        .workflow-card { background: linear-gradient(145deg, #18251e, #20392b); }
-        .status-note { background: #1c3325; color: #dcefe2; border-color: #345140; }
+        .feature-card strong, .workflow-card strong { color: #f1f5f9; }
+        .feature-card p, .overview-card .hint, .workflow-card p { color: #94a3b8; }
+        .workflow-card { background: linear-gradient(145deg, #1e293b, #0f172a); }
+        .status-note { background: #1e3a5f; color: #eef4ff; border-color: #334155; }
     }
     .foodloop-table-wrap { overflow-x: auto; margin: .5rem 0 1rem; }
     .foodloop-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-    .foodloop-table th, .foodloop-table td { border: 1px solid #dce8df; padding: .45rem .6rem; text-align: left; vertical-align: top; }
-    .foodloop-table th { background: #edf6ef; color: #12372a; font-weight: 700; }
-    .foodloop-table tbody tr:nth-child(even) { background: #f7fbf8; }
-    .foodloop-table--empty { color: #64756b; font-style: italic; }
+    .foodloop-table th, .foodloop-table td { border: 1px solid var(--foodloop-line); padding: .45rem .6rem; text-align: left; vertical-align: top; }
+    .foodloop-table th { background: #dbeafe; color: var(--foodloop-primary-dark); font-weight: 700; }
+    .foodloop-table tbody tr:nth-child(even) { background: var(--foodloop-surface); }
+    .foodloop-table--empty { color: var(--foodloop-text-muted); font-style: italic; }
     </style>
     <section class="hero">
         <div class="eyebrow">Food intelligence · responsible recovery</div>
@@ -239,6 +242,48 @@ with user_bar[1]:
         st.session_state.pop("authenticated_user", None)
         st.rerun()
 st.markdown('<div class="action-row"></div>', unsafe_allow_html=True)
+
+# ---- Sidebar navigation (Modern Blue) ----
+with st.sidebar:
+    st.markdown(
+        """
+        <div style="padding: 1rem 1.25rem; margin-bottom: 1.5rem;">
+            <div style="font-weight: 800; font-size: 1.25rem; color: var(--foodloop-primary-dark); letter-spacing: .02em;">AI FOODLOOP</div>
+            <div style="font-size: .72rem; color: var(--foodloop-text-muted); margin-top: .25rem;">Food demand & surplus</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        '<div style="font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--foodloop-text-muted); margin-bottom: .75rem;">Navigation</div>',
+        unsafe_allow_html=True,
+    )
+    nav_items = [
+        ("Dashboard", "#overview"),
+        ("Data Upload & Quality", "#data-input"),
+        ("Demand Forecasting", "#forecasting"),
+        ("Production Planning", "#forecasting"),
+        ("Daily Actuals & Feedback", "#observations"),
+        ("Surplus Management", "#surplus"),
+        ("Redistribution", "#redistribution"),
+        ("Insights & Reports", "#insights"),
+        ("Settings & Administration", "#settings"),
+    ]
+    for label, anchor in nav_items:
+        st.markdown(
+            f"<a href='{anchor}' style='display:block; padding: .55rem .85rem; margin-bottom: .4rem; border-radius: .7rem; color: var(--foodloop-text); text-decoration: none; font-size: .9rem; border: 1px solid var(--foodloop-line); background: var(--foodloop-card);'>{label}</a>",
+            unsafe_allow_html=True,
+        )
+    st.markdown(
+        '<div style="font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--foodloop-text-muted); margin-top: 1.5rem; margin-bottom: .75rem;">Account</div>',
+        unsafe_allow_html=True,
+    )
+    st.caption(f"Signed in as **{authenticated_user.username}**")
+    st.caption(f"Role: `{authenticated_user.role.value}`")
+    if st.button("Sign out", key="sidebar_sign_out", width="stretch"):
+        st.session_state.pop("authenticated_user", None)
+        st.rerun()
+
 hero_actions = st.columns([1.25, 1.15, 2.6])
 with hero_actions[0]:
     st.link_button("Forecast demand", "#forecasting", width="stretch")
@@ -357,7 +402,12 @@ st.caption(
     "The dashboard does not claim food-safety approval or model accuracy. Use approved operational data."
 )
 
-uploaded = st.file_uploader("Historical demand CSV upload karein", type="csv")
+st.caption(
+    "Required columns: date, meal_name, quantity_prepared, quantity_consumed. "
+    "Optional columns: day_of_week, event_flag, weather."
+)
+
+uploaded = st.file_uploader("Historical demand CSV upload", type="csv")
 template_path = Path(__file__).resolve().parents[1] / "data" / "sample_input_template.csv"
 st.download_button(
     "Download sample CSV template",
@@ -532,7 +582,10 @@ else:
     show_info("A preview could not be generated for this file.")
 
 if quality.missing_values:
-    st.write("Missing values:", quality.missing_values)
+    missing_pairs = ", ".join(
+        f"{column}: {count}" for column, count in quality.missing_values.items()
+    )
+    show_warning(f"Missing values detected — {missing_pairs}")
 if quality.earliest_date and quality.latest_date:
     st.caption(
         f"Valid date range: {quality.earliest_date} to {quality.latest_date} · "
@@ -561,6 +614,8 @@ try:
 except ValueError as error:
     show_error(str(error))
     st.stop()
+
+show_info("Upload validated successfully.")
 
 if data is None or getattr(data, "empty", False):
     show_empty(
@@ -614,11 +669,11 @@ forecast_readiness = assess_forecast_readiness(
     settings.forecast_lookback_days,
 )
 if forecast_readiness.status == "NOT READY":
-    st.error("Selected forecast: NOT READY")
+    show_error("Selected forecast: NOT READY")
 else:
-    st.success(f"Selected forecast: {forecast_readiness.status}")
+    show_success(f"Selected forecast: {forecast_readiness.status}")
 for message in forecast_readiness.messages:
-    st.warning(message)
+    show_warning(message)
 
 st.markdown('<div id="evaluation"></div>', unsafe_allow_html=True)
 st.subheader("Historical holdout evaluation")
@@ -632,8 +687,8 @@ if evaluation.status == "evaluated" and evaluation.metrics is not None:
     evaluation_columns[0].metric(
         "Evaluation status", "Evaluated"
     )
-    evaluation_columns[1].metric("MAE", evaluation.metrics.mae)
-    evaluation_columns[2].metric("RMSE", evaluation.metrics.rmse)
+    evaluation_columns[1].metric("MAE (units)", evaluation.metrics.mae)
+    evaluation_columns[2].metric("RMSE (units)", evaluation.metrics.rmse)
     evaluation_columns[3].metric(
         "WAPE",
         "Unavailable"
@@ -646,10 +701,33 @@ if evaluation.status == "evaluated" and evaluation.metrics is not None:
     )
     st.info(
         "MAE is the average absolute error. RMSE penalizes larger errors more heavily. "
-        "WAPE is total absolute error divided by total actual consumption."
+        "WAPE is total absolute error divided by total actual consumption. "
+        "These are chronological holdout results, not live future-prediction accuracy."
     )
 else:
-    st.warning(evaluation.message)
+    show_warning(evaluation.message)
+
+st.markdown("**Historical demand for selected meal**")
+meal_history = data[data["meal_name"] == meal].copy()
+if meal_history.empty:
+    show_info("No historical observations are available for this meal.")
+else:
+    meal_history = meal_history.sort_values("date")
+    history_series = finite_chart_series(
+        meal_history.set_index("date")["quantity_consumed"]
+    )
+    if history_series.empty:
+        show_info("Historical demand chart is unavailable for the current data.")
+    else:
+        st.caption(
+            "Observed consumption over time. Forecast values are shown separately "
+            "after a forecast is generated."
+        )
+        st.line_chart(history_series, width="stretch")
+        st.caption(
+            f"{len(history_series)} observation(s) · "
+            f"average {history_series.mean():.2f} units"
+        )
 
 if st.button(
     "Forecast nikalein",
@@ -669,18 +747,55 @@ if st.button(
         result = plan.forecast
         st.caption("Forecast and recommendation are estimates, not guarantees.")
         planning_columns = st.columns(4)
-        planning_columns[0].metric("Forecast demand", result.expected_demand)
+        planning_columns[0].metric("Forecast demand (units)", result.expected_demand)
         planning_columns[1].metric(
-            "Recommended production", result.recommended_production
+            "Recommended production (units)", result.recommended_production
         )
         planning_columns[2].metric("Safety buffer", f"{result.safety_buffer:.0%}")
         planning_columns[3].metric("Observations used", result.observations_used)
         st.caption(
-            f"Method: {result.method.replace('_', ' ')} · "
-            f"{plan.explanation}"
+            "Forecast demand is expected consumption; recommended production adds the "
+            "safety buffer on top. "
+            f"Method: {result.method.replace('_', ' ')} · {plan.explanation}"
         )
         if result.limitation:
-            st.info(result.limitation)
+            show_info(result.limitation)
+
+        st.markdown("**Historical demand vs forecast**")
+        lookback_start = pd.Timestamp(forecast_date) - pd.to_timedelta(
+            settings.forecast_lookback_days, unit="D"
+        )
+        chart_history = data[
+            (data["meal_name"] == meal)
+            & (data["date"] < pd.Timestamp(forecast_date))
+            & (data["date"] >= lookback_start)
+        ].copy()
+        if chart_history.empty:
+            show_info(
+                "No historical observations in the lookback window to chart against "
+                "the forecast."
+            )
+        else:
+            chart_history = chart_history.sort_values("date")
+            hist_series = finite_chart_series(
+                chart_history.set_index("date")["quantity_consumed"]
+            )
+            if hist_series.empty:
+                show_info("Historical demand chart is unavailable for the current data.")
+            else:
+                combined = pd.DataFrame({"Historical demand": hist_series})
+                forecast_index = pd.to_datetime([forecast_date])
+                combined.loc[forecast_index, "Forecast demand"] = (
+                    result.expected_demand
+                )
+                combined = combined.sort_index()
+                st.line_chart(combined, width="stretch")
+                st.caption(
+                    f"Forecast point: {result.expected_demand:.2f} units on "
+                    f"{forecast_date.isoformat()} (not connected to historical "
+                    "observations)."
+                )
+
         selected_observations = list_observations(
             authenticated_user.id, forecast_date, meal
         )
@@ -690,7 +805,7 @@ if st.button(
             actual_production = observed["quantity_prepared"]
             actual_consumption = observed["quantity_consumed"]
         elif len(selected_observations) > 1:
-            st.warning(
+            show_warning(
                 "Multiple saved observations match this meal and date; comparison "
                 "is unavailable until one record is selected."
             )
@@ -730,9 +845,9 @@ if st.button(
             else comparison.unmet_demand,
         )
         for message in comparison.warnings:
-            st.warning(message)
+            show_warning(message)
     except ValueError as error:
-        st.error(str(error))
+        show_error(str(error))
 
 st.markdown('<div id="surplus"></div>', unsafe_allow_html=True)
 st.markdown(

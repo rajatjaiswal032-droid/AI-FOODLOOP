@@ -149,6 +149,27 @@ def initialize_database() -> None:
                 ON production_observations(observation_date, meal_name);
             CREATE INDEX IF NOT EXISTS idx_observation_audit_observation
                 ON observation_audit_events(observation_id, event_at);
+            CREATE TABLE IF NOT EXISTS production_plans (
+                id TEXT PRIMARY KEY,
+                forecast_date TEXT NOT NULL,
+                meal_name TEXT NOT NULL,
+                forecast_demand REAL NOT NULL CHECK(forecast_demand >= 0),
+                recommended_production REAL NOT NULL CHECK(recommended_production >= 0),
+                safety_buffer REAL NOT NULL CHECK(safety_buffer >= 0 AND safety_buffer <= 1),
+                observations_used INTEGER NOT NULL CHECK(observations_used > 0),
+                method TEXT NOT NULL,
+                lookback_days INTEGER NOT NULL CHECK(lookback_days > 0),
+                status TEXT NOT NULL,
+                created_by TEXT REFERENCES users(id),
+                created_at TEXT NOT NULL,
+                actual_production REAL CHECK(actual_production >= 0),
+                actual_consumed REAL CHECK(actual_consumed >= 0),
+                updated_at TEXT NOT NULL
+            );
+            CREATE INDEX IF NOT EXISTS idx_production_plans_meal_date
+                ON production_plans(meal_name, forecast_date);
+            CREATE INDEX IF NOT EXISTS idx_production_plans_created_by
+                ON production_plans(created_by);
             """
         )
         columns = {
